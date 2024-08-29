@@ -3,7 +3,8 @@ import { TabsContent } from "@radix-ui/react-tabs";
 import Link from "next/link";
 import BankInfo from "./BankInfo";
 import { BankTabItem } from "./BankTabItem";
-import Transactionstable from "./Transactionstable";
+import { Pagination } from "./Pagination";
+import TransactionsTable from "./TransactionsTable";
 
 const RecentTransactions = ({
   accounts,
@@ -11,6 +12,15 @@ const RecentTransactions = ({
   appwriteItemId,
   page = 1,
 }: RecentTransactionsProps) => {
+  const rowsPerPage = 10;
+  const totalPages = Math.ceil(accounts.length / rowsPerPage);
+
+  const indexOfLastTransaction = page * rowsPerPage;
+  const indexOfFisrtTransaction = indexOfLastTransaction - rowsPerPage;
+  const currentTransactions = transactions.slice(
+    indexOfFisrtTransaction,
+    indexOfFisrtTransaction
+  );
   return (
     <section className="recent-transactions">
       <header className="flex items-center justify-between">
@@ -46,9 +56,14 @@ const RecentTransactions = ({
               appwriteItemId={appwriteItemId}
               type="full"
             />
-            <Transactionstable transactions={transactions} />
+            <TransactionsTable transactions={currentTransactions} />
           </TabsContent>
         ))}
+        {totalPages > 1 && (
+          <div className="my-4 w-full">
+            <Pagination totalPages={totalPages} page={page} />
+          </div>
+        )}
       </Tabs>
     </section>
   );

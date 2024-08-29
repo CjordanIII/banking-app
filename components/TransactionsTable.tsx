@@ -29,7 +29,7 @@ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
   );
 };
 
-const Transactionstable = ({ transactions }: TransactionTableProps) => {
+const TransactionsTable = ({ transactions }: TransactionTableProps) => {
   return (
     <Table>
       <TableHeader className="bg-[#f9fafb]">
@@ -92,4 +92,4 @@ const Transactionstable = ({ transactions }: TransactionTableProps) => {
   );
 };
 
-export default Transactionstable;
+export default TransactionsTable;

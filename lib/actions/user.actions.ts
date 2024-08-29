@@ -147,7 +147,7 @@ fundingSourceUrl,
     const { database } = await createAdminClient()
     const bankAccount = await database.createDocument(
       DATABASE_ID!,
-      BANK_COLLECTION_BANK_ID!,
+      BANK_COLLECTION_ID!,
       ID.unique(),
       {
           userId,
@@ -182,8 +182,8 @@ export const exchangePublicToken = async ({
       account_id: accountData.account_id,
       processor:"dwolla" as ProcessorTokenCreateRequestProcessorEnum
     }
-    const processorTokenResponse = await plaidClient.processorStripeBankAccountTokenCreate(request)
-    const processortoken = processorTokenResponse.data.processor_token
+    const processorTokenResponse = await plaidClient.processorTokenCreate(request)
+    const processorToken = processorTokenResponse.data.processor_token
     // create a funding source URL for the account using the Dwolla customer Id,
     // processor LinkTokenCreateRequestAuthFlowTypeEnum, and bank anme
     const fundingSourceUrl = await addFundingSource({
@@ -240,3 +240,22 @@ export const getBank = async ({ documentId }: getBankProps) => {
     console.log(error)
   }
 }
+
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
+  try {
+    const { database } = await createAdminClient()
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal('accountId',[accountId])]
+    )
+
+    if(bank.total !== 1) return null
+
+
+    return parseStringify(bank.documents[0])
+  } catch (error) {
+    console.log(error)
+  }
+}
+

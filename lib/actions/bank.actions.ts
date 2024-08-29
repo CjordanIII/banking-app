@@ -1,18 +1,18 @@
 "use server";
 
 import {
-    ACHClass,
-    CountryCode,
-    TransferAuthorizationCreateRequest,
-    TransferCreateRequest,
-    TransferNetwork,
-    TransferType,
+  ACHClass,
+  CountryCode,
+  TransferAuthorizationCreateRequest,
+  TransferCreateRequest,
+  TransferNetwork,
+  TransferType,
 } from "plaid";
 
-import { plaidClient } from "../plaid.config";
+import { plaidClient } from "../plaid";
 import { parseStringify } from "../utils";
 
-import { getTransactionsByBankId } from "./transaction.actions";
+import { getTransactionsByBankId } from "./transaction.action";
 import { getBank, getBanks } from "./user.actions";
 
 // Get multiple bank accounts
@@ -45,7 +45,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
           type: accountData.type as string,
           subtype: accountData.subtype! as string,
           appwriteItemId: bank.$id,
-          sharaebleId: bank.shareableId,
+          sharaebleId: bank.sharableId,
         };
 
         return account;
