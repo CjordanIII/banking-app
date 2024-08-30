@@ -241,10 +241,8 @@ export const getBanks = async ({ userId }: getBanksProps) => {
       BANK_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
     );
-    // !fix
-    // todo fix
-
-    return parseStringify(banks.documents[0]);
+  
+    return parseStringify(banks.documents);
   } catch (error) {
     
     console.log(error);

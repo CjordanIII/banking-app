@@ -6,6 +6,7 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 const Mybanks = async () => {
   const loggedIn = await getLoggedInUser();
   const accounts = await getAccounts({ userId: loggedIn.$id });
+
   return (
     <section className="flex">
       <div className="my-banks">

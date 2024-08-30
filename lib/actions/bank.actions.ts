@@ -22,12 +22,10 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
     // get banks from db
     const banks = await getBanks({userId});
     
-    
-    const bankss = [banks]
-   
+ 
     const accounts = await Promise.all(
      
-      bankss?.map(async (bank: Bank) => {
+      banks?.map(async (bank: Bank) => {
          
         // get each account info from plaid
         const accountsResponse = await plaidClient.accountsGet({

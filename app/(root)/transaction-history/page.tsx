@@ -30,7 +30,6 @@ const TransactionHistory = async ({
     indexOfFisrtTransaction,
     indexOfLastTransaction
   );
-  console.log("yeetrerere", currentTransactions);
 
   return (
     <div className="transactions">

@@ -21,7 +21,7 @@ const RecentTransactions = ({
     indexOfFisrtTransaction,
     indexOfLastTransaction
   );
-  console.log("fjdskalfkdasfjdkslajksa", currentTransactions, "fdjkal;");
+
   return (
     <section className="recent-transactions">
       <header className="flex items-center justify-between">
