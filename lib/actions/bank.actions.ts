@@ -17,36 +17,31 @@ import { getBank, getBanks } from "./user.actions";
 
 // Get multiple bank accounts
 export const getAccounts = async ({ userId }: getAccountsProps) => {
+
   try {
     // get banks from db
-    const banks = await getBanks({ userId });
-
+    const banks = await getBanks({userId});
+    
+    
+    const bankss = [banks]
+   
     const accounts = await Promise.all(
-      banks?.map(async (bank: Bank) => {
+     
+      bankss?.map(async (bank: Bank) => {
+         
         // get each account info from plaid
         const accountsResponse = await plaidClient.accountsGet({
           access_token: bank.accessToken,
         });
+     
         const accountData = accountsResponse.data.accounts[0];
-
+         
         // get institution info from plaid
         const institution = await getInstitution({
           institutionId: accountsResponse.data.item.institution_id!,
         });
 
-        const account = {
-          id: accountData.account_id,
-          availableBalance: accountData.balances.available!,
-          currentBalance: accountData.balances.current!,
-          institutionId: institution.institution_id,
-          name: accountData.name,
-          officialName: accountData.official_name,
-          mask: accountData.mask!,
-          type: accountData.type as string,
-          subtype: accountData.subtype! as string,
-          appwriteItemId: bank.$id,
-          sharableId: bank.sharableId,
-        };
+        const account = { id: accountData.account_id, availableBalance: accountData.balances.available!, currentBalance: accountData.balances.current!, institutionId: institution.institution_id, name: accountData.name, officialName: accountData.official_name, mask: accountData.mask!, type: accountData.type as string, subtype: accountData.subtype! as string, appwriteItemId: bank.$id, sharableId: bank.sharableId, };
 
         return account;
       })
@@ -65,28 +60,38 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
 
 // Get one bank account
 export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
+ 
   try {
     // get bank from db
     const bank = await getBank({ documentId: appwriteItemId });
-
+ 
     // get account info from plaid
+    // todo fixed
     const accountsResponse = await plaidClient.accountsGet({
-      access_token: bank.accessToken,
+      access_token: bank.documents[0].accessToken,
     });
+   
+    
     const accountData = accountsResponse.data.accounts[0];
 
     // get transfer transactions from appwrite
     const transferTransactionsData = await getTransactionsByBankId({
-      bankId: bank.$id,
-    });
+      bankId: bank.documents[0].$id,
+    },);
+
 
     const transferTransactions = transferTransactionsData.documents.map(
-      (transferData: Transaction) => ({
+    
+      (transferData: Transaction) => (
+     
+        {
+        
         id: transferData.$id,
         name: transferData.name!,
         amount: transferData.amount!,
         date: transferData.$createdAt,
         paymentChannel: transferData.channel,
+        access_token: transferData.accessToken,
         category: transferData.category,
         type: transferData.senderBankId === bank.$id ? "debit" : "credit",
       })
@@ -98,8 +103,9 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     });
 
     const transactions = await getTransactions({
-      accessToken: bank?.accessToken,
+      accessToken: bank.documents[0]?.accessToken,
     });
+   
 
     const account = {
       id: accountData.account_id,
@@ -118,7 +124,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     const allTransactions = [...transactions, ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-
+ 
     return parseStringify({
       data: account,
       transactions: allTransactions,
@@ -154,14 +160,19 @@ export const getTransactions = async ({
   let transactions: any = [];
 
   try {
+       
     // Iterate through each page of new transaction updates for item
     while (hasMore) {
+       
       const response = await plaidClient.transactionsSync({
         access_token: accessToken,
       });
 
-      const data = response.data;
+    
+     
 
+      const data = response.data;
+     
       transactions = response.data.added.map((transaction) => ({
         id: transaction.transaction_id,
         name: transaction.name,
@@ -215,6 +226,7 @@ export const createTransfer = async () => {
     );
 
     const transfer = responseCreateResponse.data.transfer;
+   
     return parseStringify(transfer);
   } catch (error) {
     console.error(

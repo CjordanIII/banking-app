@@ -9,14 +9,18 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
   const currentPage = Number(page as string) || 1;
 
   const loggedIn = await getLoggedInUser();
+
   const accounts = await getAccounts({ userId: loggedIn.$id });
-  // console.log(loggedIn, accounts);
+
   if (!accounts) return;
   const accountsData = accounts?.data;
+  // todo tell them how I fixed it
 
-  const appwriteItemId = (id as string) || accountsData?.appwriteItemId;
+  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
 
   const account = await getAccount({ appwriteItemId });
+
+  // todo delete later
 
   return (
     <section className="home">
@@ -36,7 +40,7 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
         </header>
         <RecentTransactions
           accounts={accountsData}
-          transactions={accountsData?.transactions}
+          transactions={account?.transactions}
           appwriteItemId={appwriteItemId}
           page={currentPage}
         />

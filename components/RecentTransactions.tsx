@@ -13,14 +13,15 @@ const RecentTransactions = ({
   page = 1,
 }: RecentTransactionsProps) => {
   const rowsPerPage = 10;
-  const totalPages = Math.ceil(accounts.length / rowsPerPage);
+  const totalPages = Math.ceil(transactions.length / rowsPerPage);
 
   const indexOfLastTransaction = page * rowsPerPage;
   const indexOfFisrtTransaction = indexOfLastTransaction - rowsPerPage;
   const currentTransactions = transactions.slice(
     indexOfFisrtTransaction,
-    indexOfFisrtTransaction
+    indexOfLastTransaction
   );
+  console.log("fjdskalfkdasfjdkslajksa", currentTransactions, "fdjkal;");
   return (
     <section className="recent-transactions">
       <header className="flex items-center justify-between">
