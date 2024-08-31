@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { createTransfer } from "@/lib/actions/dwolla.actions";
-import { createTransaction } from "@/lib/actions/transaction.action";
+import { createTransaction } from "@/lib/actions/transaction.actions";
 import { getBank, getBankByAccountId } from "@/lib/actions/user.actions";
 import { decryptId } from "@/lib/utils";
 
@@ -54,17 +54,20 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
 
     try {
       const receiverAccountId = decryptId(data.shareableId);
+
       const receiverBank = await getBankByAccountId({
         accountId: receiverAccountId,
       });
+
       const senderBank = await getBank({ documentId: data.senderBank });
 
       const transferParams = {
-        sourceFundingSourceUrl: senderBank.fundingSourceUrl,
-        destinationFundingSourceUrl: receiverBank.fundingSourceUrl,
+        sourceFundingSourceUrl: senderBank.documents[0].fundingSourceUrl,
+        destinationFundingSourceUrl: receiverBank.documents[0].fundingSourceUrl,
         amount: data.amount,
       };
       // create transfer
+
       const transfer = await createTransfer(transferParams);
 
       // create transfer transaction
@@ -72,10 +75,10 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
         const transaction = {
           name: data.name,
           amount: data.amount,
-          senderId: senderBank.userId.$id,
-          senderBankId: senderBank.$id,
-          receiverId: receiverBank.userId.$id,
-          receiverBankId: receiverBank.$id,
+          senderId: senderBank.documents[0].userId.$id,
+          senderBankId: senderBank.documents[0].$id,
+          receiverId: receiverBank.documents[0].userId.$id,
+          receiverBankId: receiverBank.documents[0].$id,
           email: data.email,
         };
 

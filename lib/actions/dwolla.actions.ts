@@ -54,11 +54,13 @@ export const createOnDemandAuthorization = async () => {
 export const createDwollaCustomer = async (
   newCustomer: NewDwollaCustomerParams
 ) => {
+  
   try {
     return await dwollaClient
       .post("customers", newCustomer)
       .then((res) => res.headers.get("location"));
   } catch (err) {
+    
     console.error("Creating a Dwolla Customer Failed: ", err);
   }
 };
@@ -68,6 +70,7 @@ export const createTransfer = async ({
   destinationFundingSourceUrl,
   amount,
 }: TransferParams) => {
+  
   try {
     const requestBody = {
       _links: {
@@ -87,6 +90,7 @@ export const createTransfer = async ({
       .post("transfers", requestBody)
       .then((res) => res.headers.get("location"));
   } catch (err) {
+ 
     console.error("Transfer fund failed: ", err);
   }
 };
@@ -96,6 +100,7 @@ export const addFundingSource = async ({
   processorToken,
   bankName,
 }: AddFundingSourceParams) => {
+
   try {
     // create dwolla auth link
     const dwollaAuthLinks = await createOnDemandAuthorization();

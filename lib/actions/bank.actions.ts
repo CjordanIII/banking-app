@@ -12,7 +12,7 @@ import {
 import { plaidClient } from "../plaid";
 import { parseStringify } from "../utils";
 
-import { getTransactionsByBankId } from "./transaction.action";
+import { getTransactionsByBankId } from "./transaction.actions";
 import { getBank, getBanks } from "./user.actions";
 
 // Get multiple bank accounts
@@ -33,13 +33,13 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
         });
      
         const accountData = accountsResponse.data.accounts[0];
-         
+        
         // get institution info from plaid
         const institution = await getInstitution({
           institutionId: accountsResponse.data.item.institution_id!,
         });
 
-        const account = { id: accountData.account_id, availableBalance: accountData.balances.available!, currentBalance: accountData.balances.current!, institutionId: institution.institution_id, name: accountData.name, officialName: accountData.official_name, mask: accountData.mask!, type: accountData.type as string, subtype: accountData.subtype! as string, appwriteItemId: bank.$id, sharableId: bank.sharableId, };
+        const account = { id: accountData.account_id, availableBalance: accountData.balances.available!, currentBalance: accountData.balances.current!, institutionId: institution.institution_id, name: accountData.name, officialName: accountData.official_name, mask: accountData.mask!, type: accountData.type as string, subtype: accountData.subtype! as string, appwriteItemId: bank.$id,    sharaebleId: bank.shareableId, };
 
         return account;
       })
@@ -62,7 +62,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
   try {
     // get bank from db
     const bank = await getBank({ documentId: appwriteItemId });
- 
+   
     // get account info from plaid
     // todo fixed
     const accountsResponse = await plaidClient.accountsGet({
@@ -74,10 +74,10 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
 
     // get transfer transactions from appwrite
     const transferTransactionsData = await getTransactionsByBankId({
-      bankId: bank.documents[0].$id,
-    },);
+      bankId: bank.documents[0].bankId,
+    });
 
-
+  
     const transferTransactions = transferTransactionsData.documents.map(
     
       (transferData: Transaction) => (
@@ -91,7 +91,8 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
         paymentChannel: transferData.channel,
         access_token: transferData.accessToken,
         category: transferData.category,
-        type: transferData.senderBankId === bank.$id ? "debit" : "credit",
+          type: transferData.senderBankId === bank.$id ? "debit" : "credit",
+      shareableId:shareableId
       })
     );
 

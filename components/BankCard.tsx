@@ -4,12 +4,13 @@ import Link from "next/link";
 import Copy from "./Copy";
 
 const BankCard = ({
+  key,
   account,
   userName,
   showBalance = true,
 }: CreditCardProps) => {
   return (
-    <div>
+    <div key={key}>
       {
         <Link
           href={`/transaction-history/?id=${account.appwriteItemId}`}
@@ -50,7 +51,8 @@ const BankCard = ({
           />
         </Link>
       }
-      {showBalance && <Copy title={account?.shareableId} />}
+
+      {showBalance && <Copy title={account?.sharaebleId} />}
     </div>
   );
 };

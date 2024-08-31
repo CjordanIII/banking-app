@@ -1,3 +1,4 @@
+'use server'
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite";
 import { parseStringify } from "../utils";
@@ -10,6 +11,7 @@ const {
 export const createTransaction = async (
   transaction: CreateTransactionProps
 ) => {
+ 
   try {
     const { database } = await createAdminClient();
     const newTransaction = await database.createDocument(
@@ -25,6 +27,7 @@ export const createTransaction = async (
 
     return parseStringify(newTransaction);
   } catch (error) {
+  
     console.error(error);
   }
 };
