@@ -24,6 +24,7 @@ export const createTransaction = async (
         ...transaction,
       }
     );
+     
 
     return parseStringify(newTransaction);
   } catch (error) {
@@ -44,12 +45,13 @@ export const getTransactionsByBankId = async ({
       TRANSACTION_COLLECTION_ID!,
       [Query.equal("senderBankId", bankId)]
     );
-
+  
     const reciverTransactions = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_COLLECTION_ID!,
       [Query.equal("receiverBankId", bankId)]
     );
+     
     const transactions = {
       total: senderTransactions.total + reciverTransactions.total,
       documents: [

@@ -77,7 +77,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       bankId: bank.documents[0].bankId,
     });
 
-  
+
     const transferTransactions = transferTransactionsData.documents.map(
     
       (transferData: Transaction) => (
@@ -123,7 +123,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     const allTransactions = [...transactions, ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
- 
+   
     return parseStringify({
       data: account,
       transactions: allTransactions,
@@ -171,7 +171,7 @@ export const getTransactions = async ({
      
 
       const data = response.data;
-     
+  
       transactions = response.data.added.map((transaction) => ({
         id: transaction.transaction_id,
         name: transaction.name,
